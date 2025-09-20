@@ -5,13 +5,13 @@ from sprite import *
 def dialogue_mode(sprite, text):
     sprite.update()
     screen.blit(space, (0, 0))
-    screen.blit(sprite.image,sprite.rect)
+    screen.blit(sprite.image, sprite.rect)
 
     text1 = f1.render(text[text_number], True, pg.Color("white"))
     screen.blit(text1, (280, 450))
     if text_number < len(text) - 1:
         text2 = f1.render(text[text_number + 1], True, pg.Color("white"))
-        screen.blit(text2, (280,470))
+        screen.blit(text2, (280, 470))
 
 
 pg.init()
@@ -24,7 +24,6 @@ pg.display.set_caption("Космические коты")
 FPS = 120
 clock = pg.time.Clock()
 
-
 heart = pg.image.load("heart.png").convert_alpha()
 heart = pg.transform.scale(heart, (30, 30))
 heart_count = 3
@@ -32,15 +31,13 @@ heart_count = 3
 is_running = True
 mode = "start_scene"
 
-
-
 start_time = time.time()
 meteorites = pg.sprite.Group()
 mice = pg.sprite.Group()
 lasers = pg.sprite.Group()
 
 space = pg.image.load("space.png").convert()
-space = pg.transform.scale(space,size)
+space = pg.transform.scale(space, size)
 
 captain = Captain()
 alien = Alien()
@@ -77,7 +74,7 @@ final_text = ["Огромное вам спасибо,",
               "А также несколько бутылок нашей",
               "лучшей валерьянки.",
               "",
-              ""]
+              ]
 
 text_number = 0
 f1 = pg.font.Font("FRACTAL.otf", 25)
@@ -85,7 +82,6 @@ f1 = pg.font.Font("FRACTAL.otf", 25)
 # pg.mixer.music.load("Teanse Intro.wav")
 # pg.mixer.set_volume(0)
 # pg.mixer.music.play()
-
 
 
 while is_running:
@@ -110,13 +106,9 @@ while is_running:
                     start_time = time.time()
                     starship.switch_mode()
 
-
             if mode == "moon":
                 if event.key == pg.K_SPACE:
                     lasers.add(Laser(starship.rect.midtop))
-
-
-
 
             if mode == "final_scene":
                 text_number += 2
@@ -124,21 +116,19 @@ while is_running:
                     text_number = 0
                     mode = "end"
 
-
     # ОБНОВЛЕНИЯ
     if mode == "start_scene":
         dialogue_mode(captain, start_text)
 
     if mode == "meteorites":
-        if time.time() - start_time > 5.0:
+        if time.time() - start_time > 20.0:
             mode = "alien_scene"
 
-        if random.randint(1,30) == 1:
+        if random.randint(1, 30) == 1:
             meteorites.add(Meteorite())
 
         starship.update()
         meteorites.update()
-
 
         hits = pg.sprite.spritecollide(starship, meteorites, True, pg.sprite.collide_mask)
         for hit in hits:
@@ -150,30 +140,24 @@ while is_running:
         screen.blit(starship.image, starship.rect)
         meteorites.draw(screen)
 
-
-
         for i in range(heart_count):
             screen.blit(heart, (i * 30, 0))
-
-
 
     if mode == "alien_scene":
         dialogue_mode(alien, alien_text)
 
     if mode == "moon":
-        if time.time() - start_time > 5.0:
+        if time.time() - start_time > 20.0:
             mode = "final_scene"
-
 
         if random.randint(1, 30) == 1:
             mice.add(Mouse_starship())
 
-        hits = pg.sprite.groupcollide(lasers, mice,True, True)
+        hits = pg.sprite.groupcollide(lasers, mice, True, True)
 
         starship.update()
         mice.update()
         lasers.update()
-
 
         hits = pg.sprite.spritecollide(starship, mice, True, pg.sprite.collide_mask)
         for hit in hits:
@@ -191,7 +175,7 @@ while is_running:
             screen.blit(heart, (i * 30, 0))
 
     if mode == "final_scene":
-        dialogue_mode(alien, alien_text)
+        dialogue_mode(alien, final_text)
 
     pg.display.flip()
     clock.tick(FPS)
